@@ -1,3 +1,3 @@
-# angular-tutorial
+# Angular tutorial
 
 Tutorial Angular 2
