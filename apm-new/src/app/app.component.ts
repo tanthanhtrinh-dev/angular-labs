@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 }) //why here don't have semicolon (there is no semicolon here)
 export class AppComponent {
-  title = 'Hello world';
+  title = 'Hello world'; 
 }
 
