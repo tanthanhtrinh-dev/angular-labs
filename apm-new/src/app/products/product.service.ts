@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, first, find } from 'rxjs/operators';
 import { IProduct } from './product';
 
 @Injectable({
@@ -9,6 +9,7 @@ import { IProduct } from './product';
 })
 export class ProductService {
   private _productUrl: string = 'api/products/products.json';
+  private _productDetailUrl: string = 'api/products/product.json';
 
   constructor(private http: HttpClient) {}
   // Basic get product
@@ -21,6 +22,18 @@ export class ProductService {
       catchError(this.handleError)
     );
   }
+
+  getProductById(id: number): Observable<IProduct>{
+    //console.log("id",id);
+    return this.http.get<IProduct>(this._productDetailUrl).pipe(
+      //tap((data) => data.productId === id),      
+      //find(f:IProduct => f.productId === id),
+      //first(f=> f.productId === id),
+      tap(_ => console.log(`fetched hero id=${id}`)),
+      catchError(this.handleError)
+    );    
+  }
+
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) {

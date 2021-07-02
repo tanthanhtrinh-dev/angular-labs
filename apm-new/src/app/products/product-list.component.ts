@@ -41,7 +41,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
   // }
 
   //option 2
-  constructor(private _productService: ProductService) {}
+  constructor(private _productService: ProductService) {
+
+  }
   ngOnDestroy(): void {
     //throw new Error('Method not implemented.');
     this.sub.unsubscribe();
