@@ -2,8 +2,10 @@
 
 Practice Angular 2
 
-#ng generate component
+#Generate component
+
 https://angular.io/cli/generate#component
+
 ```sh
 ng g c customer app/customers/customer --flat
 ```
