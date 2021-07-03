@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CustomerComponent } from './customers/customer.component';
-import { AccountComponent } from './accounts/account/account.component';
+import { AccountComponent } from './accounts/account.component';
 
 @NgModule({
   declarations: [
