@@ -2,7 +2,7 @@
 
 Practice Angular 2
 
-#Generate component
+# Generate component
 
 https://angular.io/cli/generate#component
 
