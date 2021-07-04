@@ -4,14 +4,43 @@ import {
   FormBuilder,
   Validators,
   AbstractControl,
+  ValidatorFn,
 } from '@angular/forms';
 import { Customer } from 'src/app/customers/customer';
 
-function ratingRange(c: AbstractControl): { [key: string]: boolean } | null {
-  if (c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)) {
-    return { range: true };
+//Custom Validators
+// function ratingRange(c: AbstractControl): { [key: string]: boolean } | null {
+//   if (c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)) {
+//     return { range: true };
+//   }
+//   return null;
+// }
+//Custom Validators with parameters
+function ratingRange(min: number, max: number): ValidatorFn {
+  return (c: AbstractControl): { [key: string]: boolean } | null => {
+    if (
+      c.value !== null &&
+      (isNaN(c.value) || c.value < min || c.value > max)
+    ) {
+      return { range: true };
+    }
+    return null;
+  };
+}
+
+//Custom Validators in FromGroup
+function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
+  const emailControl = c.get('email');
+  const confirmControl = c.get('confirmEmail');
+  //skip the validation when the formcontrol has not been touched yet
+  if (emailControl?.pristine || confirmControl?.pristine) {
+    return null;
   }
-  return null;
+
+  if (emailControl?.value === confirmControl?.value) {
+    return null;
+  }
+  return { match: true };
 }
 
 @Component({
@@ -45,11 +74,19 @@ export class AccountComponent implements OnInit {
     this.accountForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(30)]],
-      email: ['', [Validators.required, Validators.email]],
+      emailGroup: this.fb.group(
+        {
+          email: ['', [Validators.required, Validators.email]],
+          confirmEmail: ['', [Validators.required]],
+        },
+        { validator: emailMatcher }
+      ),
+      //email: ['', [Validators.required, Validators.email]],
+      //confirmEmail: ['',[Validators.required]],
       phone: '',
       notification: 'email',
       //rating: [null, [Validators.min(1), Validators.max(5)]],
-      rating: [null, ratingRange],
+      rating: [null, ratingRange(1, 5)],
       sendCatalog: { value: true, disabled: false },
     });
   }
