@@ -1,3 +1,4 @@
+import { debounceTime } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
@@ -5,6 +6,7 @@ import {
   Validators,
   AbstractControl,
   ValidatorFn,
+  FormArray,
 } from '@angular/forms';
 import { Customer } from 'src/app/customers/customer';
 
@@ -30,14 +32,14 @@ function ratingRange(min: number, max: number): ValidatorFn {
 
 //Custom Validators in FromGroup
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
-  const emailControl = c.get('email');
-  const confirmControl = c.get('confirmEmail');
+  const emailControl: AbstractControl | any = c.get('email');
+  const confirmControl: AbstractControl | any = c.get('confirmEmail');
   //skip the validation when the formcontrol has not been touched yet
-  if (emailControl?.pristine || confirmControl?.pristine) {
+  if (emailControl.pristine || confirmControl.pristine) {
     return null;
   }
 
-  if (emailControl?.value === confirmControl?.value) {
+  if (emailControl.value === confirmControl.value) {
     return null;
   }
   return { match: true };
@@ -49,10 +51,22 @@ function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent implements OnInit {
-  accountForm!: FormGroup;
+  accountForm: FormGroup;
   customer: Customer = new Customer();
+  emailMessage: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  get addresses(): FormArray {
+    return <FormArray>this.accountForm.get('addresses');
+  }
+  //Ref: https://stackoverflow.com/questions/40358434/typescript-ts7015-element-implicitly-has-an-any-type-because-index-expression/40358512#40358512
+  private _validationMessages: { [key: string]: string } = {
+    required: 'Please enter your email address.',
+    email: 'Please enter a valid email address.',
+  };
+
+  constructor(private fb: FormBuilder) {
+    this.accountForm = this.fb.group({});
+  }
 
   ngOnInit(): void {
     //init by FormBuilder
@@ -83,17 +97,66 @@ export class AccountComponent implements OnInit {
       ),
       //email: ['', [Validators.required, Validators.email]],
       //confirmEmail: ['',[Validators.required]],
-      phone: '',
+      phone: null,
       notification: 'email',
       //rating: [null, [Validators.min(1), Validators.max(5)]],
       rating: [null, ratingRange(1, 5)],
-      sendCatalog: { value: true, disabled: false },
+      sendCatalog: true,
+      // addresses: this.fb.group({
+      //   addressType: 'home',
+      //   street1: '',
+      //   street2: '',
+      //   city: '',
+      //   state: '',
+      //   zip: '',
+      // }),
+      addresses: this.fb.array([this.buildAddress()]),
+    });
+
+    this.accountForm.get('notification')?.valueChanges.subscribe((s) => {
+      return this.setNotification(s);
+      //console.log(JSON.stringify(s));
+    });
+
+    const emailControl = this.accountForm.get('emailGroup.email');
+
+    emailControl?.valueChanges.pipe(debounceTime(1000)).subscribe((s) => {
+      console.log(s);
+      this.setMessage(emailControl);
     });
   }
   save() {
     console.log(this.accountForm);
     console.log('Saved: ' + JSON.stringify(this.accountForm.value));
   }
+
+  setMessage(c: AbstractControl): void {
+    this.emailMessage = '';
+
+    //console.log(c.touched);
+    if ((c.touched || c.dirty) && c.errors) {
+      this.emailMessage = Object.keys(c.errors)
+        .map((key) => {
+          console.log(key);
+          return this._validationMessages[key];
+        })
+        .join(' ');
+    }
+  }
+  buildAddress(): FormGroup {
+    return this.fb.group({
+      addressType: 'home',
+      street1: '',
+      street2: '',
+      city: '',
+      state: '',
+      zip: '',
+    });
+  }
+  addAddress(): void{
+    this.addresses.push(this.buildAddress());
+  }
+
   populateTestDate() {
     this.accountForm.setValue({
       firstName: 'Jack',
