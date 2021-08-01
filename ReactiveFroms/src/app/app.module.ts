@@ -1,5 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -8,31 +9,34 @@ import { AppComponent } from './app.component';
 import { CustomerComponent } from './customers/customer.component';
 import { AccountComponent } from './accounts/account.component';
 import { WelcomeComponent } from './home/welcome/welcome.component';
-import { ProductModule } from './products/product.module';
 import { CustomerModule } from './customers/customer.module';
 import { HttpClientModule } from '@angular/common/http';
-
+import { MessageModule } from './messages/message.module';
+import { UserModule } from './user/user.module';
+import { AuthGuard } from './user/auth.guard';
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { ProductData } from './products/product-data';
 @NgModule({
   declarations: [
     AppComponent,
     //AccountComponent,
-    WelcomeComponent
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    RouterModule.forRoot([
-      { path: 'welcome', component: WelcomeComponent },
-      { path: '', redirectTo: 'welcome', pathMatch: 'full' },
-      { path: '**', redirectTo: 'welcome', pathMatch: 'full' },
-    ]),
+    BrowserAnimationsModule,
+    InMemoryWebApiModule.forRoot(ProductData, { delay: 1000 }),
     //FormsModule,
     //ReactiveFormsModule,
     CustomerModule,
-    ProductModule,
+    //ProductModule,
+    MessageModule,
+    UserModule,
+    AppRoutingModule
   ],
   exports: [RouterModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

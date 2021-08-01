@@ -1,18 +1,19 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChildren, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators, FormControlName } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormArray, Validators, FormControlName, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { Product } from './product';
-import { ProductService } from './product.service';
+import { Product, ProductResolved } from '../product';
+import { ProductService } from '../product.service';
 
-import { NumberValidators } from '../shared/number.validator';
-import { GenericValidator } from '../shared/generic-validator';
+import { NumberValidators } from '../../shared/number.validator';
+import { GenericValidator } from '../../shared/generic-validator';
 
 @Component({
-  templateUrl: './product-edit.component.html'
+  templateUrl: './product-edit.component.html',
+  styleUrls: ['./product-edit.component.scss']
 })
 export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
@@ -20,9 +21,14 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
   pageTitle = 'Product Edit';
   errorMessage: string;
   productForm: FormGroup;
-
-  product: Product;
-  private sub: Subscription;
+  //compare product
+  get isDirty(): boolean {
+    return JSON.stringify(this.originalProduct) !== JSON.stringify(this.currentProduct);
+  }
+  //product: Product;
+  //private sub: Subscription;
+  private currentProduct: Product|any;
+  private originalProduct: Product|any;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -31,6 +37,15 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get tags(): FormArray {
     return this.productForm.get('tags') as FormArray;
+  }
+
+  get product():Product{
+    return this.currentProduct;
+  }
+  set product(value: Product){
+    this.currentProduct = value;
+    //Clone the objectto retain a copy
+    this.originalProduct = {...value};
   }
 
   constructor(private fb: FormBuilder,
@@ -71,23 +86,28 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     // Read the product Id from the route parameter
-    this.sub = this.route.paramMap.subscribe(
-      params => {
-        const id:number = + params.get('id')!;
-        this.getProduct(id);
-      }
-    );
-  }
+    // this.sub = this.route.paramMap.subscribe(
+    //   params => {
+    //     const id:number = + params.get('id')!;
+    //     this.getProduct(id);
+    //   }
+    // );
 
+    this.route.data.subscribe(data=>{
+      const resolvedData: ProductResolved = data['resolvedData'];
+      this.errorMessage = resolvedData.error;
+      this.onProductRetrieved(resolvedData.product);
+    });
+  }
+ 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    //this.sub.unsubscribe();
   }
 
   ngAfterViewInit(): void {
     // Watch for the blur event from any input element on the form.
     // This is required because the valueChanges does not provide notification on blur
-    const controlBlurs: Observable<any>[] = this.formInputElements
-      .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
+    const controlBlurs: Observable<any>[] = this.formInputElements.map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
     // Merge the blur event observable with the valueChanges observable
     // so we only need to subscribe once.
@@ -107,13 +127,26 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tags.markAsDirty();
   }
 
-  getProduct(id: number): void {
-    this.productService.getProduct(id)
-      .subscribe({
-        next: (product: Product) => this.displayProduct(product),
-        error: err => this.errorMessage = err
-      });
+  onProductRetrieved(product: Product): void {
+    this.currentProduct = product;
+    if (!this.currentProduct) {
+      this.pageTitle = 'No product found';      
+    } else {
+      if(this.currentProduct.id===0){
+        this.pageTitle ='Add Product';
+      }else{
+        this.pageTitle = `Product Detail: ${this.currentProduct.productName}`;
+      }      
+    }
   }
+
+  // getProduct(id: number): void {
+  //   this.productService.getProduct(id)
+  //     .subscribe({
+  //       next: (product: Product) => this.displayProduct(product),
+  //       error: err => this.errorMessage = err
+  //     });
+  // }
 
   displayProduct(product: Product): void { 
     if (this.productForm) {
@@ -151,7 +184,12 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
-
+  reset(): void {
+    //this.dataIsValid = null;
+    //this.productForm.dirty
+    this.currentProduct = null;
+    this.originalProduct = null;
+  }
   saveProduct(): void {
     if (this.productForm.valid) {
       if (this.productForm.dirty) {

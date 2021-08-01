@@ -16,7 +16,7 @@
       <div class="col-md-6">
         <h4>Filtered by: {{listFilter}}</h4>
       </div>
-    </div>
+    </div> 
 
     <div class="table-responsive">
       <table class="table mb-0"
@@ -47,7 +47,9 @@
                    [style.margin.px]="imageMargin">
             </td>
             <td>
-              <a [routerLink]="['/products', product.id]">
+              <a [routerLink]="['/products', product.id]"
+                  [queryParams]="{filterBy: listFilter, showImage: showImage}"
+                >
                 {{ product.productName }}
               </a>
             </td>
@@ -58,8 +60,7 @@
               <pm-star [rating]="product.starRating"></pm-star>
             </td>
             <td>
-              <button class="btn btn-outline-primary btn-sm"
-                      [routerLink]="['/products', product.id, 'edit']">
+              <button class="btn btn-outline-primary btn-sm" [routerLink]="['/products', product.id, 'edit']">
                 Edit
               </button>
             </td>

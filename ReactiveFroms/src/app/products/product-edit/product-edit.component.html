@@ -4,7 +4,14 @@
   </div>
 
   <div class="card-body">
-    <form novalidate
+    <div class="wizard">
+      <a [routerLink]="['info']" routerLinkActive="active">Basic information</a>
+      <a [routerLink]="['tags']" routerLinkActive="active">Search Tags</a>
+    </div>
+
+    <router-outlet></router-outlet>
+    
+    <!-- <form novalidate
           (ngSubmit)="saveProduct()"
           [formGroup]="productForm">
 
@@ -130,7 +137,32 @@
           </button>
         </div>
       </div>
-    </form>
+    </form> -->
+    <div class="form-group row mb-2">
+      <div class="offset-md-2 col-md-4">
+        <button class="btn btn-primary mr-3"
+                style="width:80px;"
+                type="submit"
+                [title]="productForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                [disabled]="!productForm.valid">
+          Save
+        </button>
+        <button class="btn btn-outline-secondary mr-3"
+                style="width:80px;"
+                type="button"
+                title="Cancel your edits"
+                [routerLink]="['/products']">
+          Cancel
+        </button>
+        <button class="btn btn-outline-warning"
+                style="width:80px"
+                type="button"
+                title="Delete this product"
+                (click)="deleteProduct()">
+          Delete
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="alert alert-danger"
