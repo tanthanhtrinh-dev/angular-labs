@@ -62,7 +62,7 @@ export class ProductService {
 
   createProduct(product: Product): Observable<Product> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
+    
     product.id = null;
     return this.http.post<Product>(this.productsUrl, product, { headers })
       .pipe(
@@ -75,8 +75,7 @@ export class ProductService {
       );
   }
 
-  deleteProduct(id: number): Observable<{}> {
-    
+  deleteProduct(id: number): Observable<{}> {    
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.productsUrl}/${id}`;
     return this.http.delete<Product>(url, { headers })

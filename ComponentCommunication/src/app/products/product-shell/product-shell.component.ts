@@ -1,5 +1,5 @@
 import { ProductService } from './../product.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
   //selector: 'pm-product-shell-list',
@@ -8,11 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductShellComponent implements OnInit {
   monthCount: number=0;
-  constructor(private productServicce: ProductService) { }
 
+  constructor(private productServicce: ProductService) { }
   ngOnInit(): void {
     this.productServicce.selectProductChanges$.subscribe(selectedProduct=>{
-
       if(selectedProduct){
         const start = new Date(selectedProduct.releaseDate);
         const now = new Date();
@@ -20,8 +19,8 @@ export class ProductShellComponent implements OnInit {
       }else{
         this.monthCount = 0;
       }
-
     });
   }
+
 
 }
