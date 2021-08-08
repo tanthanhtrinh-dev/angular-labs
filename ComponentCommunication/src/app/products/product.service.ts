@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { Product } from './product';
@@ -11,13 +11,30 @@ import { Product } from './product';
 })
 export class ProductService {
   private productsUrl = 'api/products';
+  private products!: Product[];
 
-  constructor(private http: HttpClient) { }
+  //currentProduct!: Product | null;
+  //private selectProductSource = new Subject<Product|null>();
+  private selectProductSource = new BehaviorSubject<Product|null>(null);
+  //allow to read as Observable
+  selectProductChanges$ = this.selectProductSource.asObservable();
 
+  constructor(private http: HttpClient) {
+
+   }
+   changeSelectedProduct(selectedProduct: Product|null):void{
+     this.selectProductSource.next(selectedProduct);
+   }
   getProducts(): Observable<Product[]> {
+    if(this.products){
+      console.log("get from cache");
+      return of(this.products); //using 
+    }
+
     return this.http.get<Product[]>(this.productsUrl)
       .pipe(
         tap(data => console.log(JSON.stringify(data))),
+        tap(data => this.products = data),
         catchError(this.handleError)
       );
   }
@@ -26,6 +43,15 @@ export class ProductService {
     if (id === 0) {
       return of(this.initializeProduct());
     }
+    //get product from cache
+    if(this.products){
+      const foundItem = this.products.find(item=>item.id===id);
+      console.log("getProduct from cache");
+      if(foundItem){
+        return of(foundItem);
+      }
+    }
+
     const url = `${this.productsUrl}/${id}`;
     return this.http.get<Product>(url)
       .pipe(
@@ -41,16 +67,30 @@ export class ProductService {
     return this.http.post<Product>(this.productsUrl, product, { headers })
       .pipe(
         tap(data => console.log('createProduct: ' + JSON.stringify(data))),
+        tap(data=>{
+          this.products.push(data);
+          this.changeSelectedProduct(data);
+        }),
         catchError(this.handleError)
       );
   }
 
   deleteProduct(id: number): Observable<{}> {
+    
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.productsUrl}/${id}`;
     return this.http.delete<Product>(url, { headers })
       .pipe(
         tap(data => console.log('deleteProduct: ' + id)),
+        tap(data=>{
+          console.log('spliceProduct: ' + id);
+          const foundIndex = this.products.findIndex(item=>item.id ===id);
+          if(foundIndex>-1){
+            this.products.splice(foundIndex, 1);//remove item out the products list
+            //this.currentProduct = null;
+            this.changeSelectedProduct(null);
+          }
+        }),
         catchError(this.handleError)
       );
   }
@@ -62,7 +102,7 @@ export class ProductService {
       .pipe(
         tap(() => console.log('updateProduct: ' + product.id)),
         // Return the product on an update
-        map(() => product),
+        //map(() => product),
         catchError(this.handleError)
       );
   }

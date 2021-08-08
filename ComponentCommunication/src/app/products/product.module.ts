@@ -16,6 +16,9 @@ import { ProductEditGuard } from './product-edit/product-edit.guard';
 import { ProductEditComponent } from './product-edit/product-edit.component';
 import { ProductEditInfoComponent } from './product-edit/product-edit-info.component';
 import { ProductEditTagsComponent } from './product-edit/product-edit-tags.component';
+import { ProductShellComponent } from './product-shell/product-shell.component';
+import { ProductShellListComponent } from './product-shell/product-shell-list.component';
+import { ProductShellDetailComponent } from './product-shell/product-shell-detail.component';
 
 @NgModule({
   imports: [
@@ -25,7 +28,7 @@ import { ProductEditTagsComponent } from './product-edit/product-edit-tags.compo
     RouterModule.forChild([
       {
         path: '',
-        component: ProductListComponent,
+        component: ProductShellComponent,
       },
       {
         path: ':id',
@@ -53,6 +56,9 @@ import { ProductEditTagsComponent } from './product-edit/product-edit-tags.compo
     ProductEditComponent,
     ProductEditInfoComponent,
     ProductEditTagsComponent,
+    ProductShellComponent,
+    ProductShellListComponent,
+    ProductShellDetailComponent
   ],
 })
 export class ProductModule {}

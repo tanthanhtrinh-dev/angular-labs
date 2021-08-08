@@ -179,7 +179,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
         this.productService.deleteProduct(this.product.id)
           .subscribe({
             next: () => this.onSaveComplete(),
-            error: err => this.errorMessage = err
+            error: (err:any) => {this.errorMessage = <any>err}            
           });
       }
     }

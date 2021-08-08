@@ -4,19 +4,15 @@
   </div>
 
   <div class="card-body">
-    <div class="row">
-      <div class="col-md-2">Filter by:</div>
-      <div class="col-md-4">
-        <input type="text"
-               [(ngModel)]="listFilter" />
+      <!-- Filter by the Title -->
+      <div class='row'>
+          <pm-criteria #filterCriteria class='col-md-10'
+              [displayDetail]='includeDetail'
+              (valueChange)='onValueChange($event)'
+              >
+          </pm-criteria>
+          {{ filterCriteria.listFilter }}
       </div>
-    </div>
-    <div class="row"
-         *ngIf="listFilter">
-      <div class="col-md-6">
-        <h4>Filtered by: {{listFilter}}</h4>
-      </div>
-    </div> 
 
     <div class="table-responsive">
       <table class="table mb-0"
@@ -47,9 +43,7 @@
                    [style.margin.px]="imageMargin">
             </td>
             <td>
-              <a [routerLink]="['/products', product.id]"
-                  [queryParams]="{filterBy: listFilter, showImage: showImage}"
-                >
+              <a [routerLink]="['/products', product.id]" >
                 {{ product.productName }}
               </a>
             </td>
