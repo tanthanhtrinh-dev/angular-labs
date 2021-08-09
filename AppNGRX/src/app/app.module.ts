@@ -11,6 +11,9 @@ import { PageNotFoundComponent } from './home/page-not-found.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { MenuComponent } from './home/menu.component';
 import { ShellComponent } from './home/shell.component';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,13 @@ import { ShellComponent } from './home/shell.component';
     HttpClientModule,
     HttpClientInMemoryWebApiModule.forRoot(ProductData),
     UserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({ 
+      name: 'NG RX Demo',
+      maxAge: 25, 
+      logOnly: environment.production 
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
