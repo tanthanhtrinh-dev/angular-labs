@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 
 import { LoginComponent } from './login.component';
-import { userReducer } from './user.reducer';
+import { userReducer } from './state/user.reducer';
 
 const userRoutes: Routes = [
   { path: 'login', component: LoginComponent }

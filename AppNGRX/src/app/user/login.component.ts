@@ -1,3 +1,4 @@
+import { UserState, getMaskUserName } from './state/user.reducer';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,17 +17,14 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService, 
     private router: Router, 
-    private store: Store<any>) { 
+    private store: Store<UserState>) { 
       
     }
 
   ngOnInit(): void {
     //TODO: Unsubscribe
-    this.store.select('user').subscribe(user=>{
-      if(user){
-          this.maskUserName = user.maskUserName;
-         
-      }
+    this.store.select(getMaskUserName).subscribe(maskUserName=>{      
+          this.maskUserName = maskUserName;
     });
   }
 
