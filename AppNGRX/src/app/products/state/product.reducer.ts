@@ -11,15 +11,17 @@ export interface State extends AppState.State{
 export interface ProductState{
   showProductCode: boolean;
   currentProduct: Product|null;
-  currentProductId: number;
+  currentProductId: number|null;
   products: Product[];
+  error: string;
 }
 
 const initialState: ProductState = {
   showProductCode : true,
   currentProduct: null,
   currentProductId: 0,
-  products: []
+  products: [],
+  error:''
 };
 
 //begin Building Selectors
@@ -51,11 +53,14 @@ export const getCurrentProductId = createSelector(
 //   }
 // );
 
-export const getproducts = createSelector(
+export const getProducts = createSelector(
   getProductFeatureState,
   state=>state.products
 );
-
+export const getError = createSelector(
+  getProductFeatureState,
+  state=>state.error
+);
 //end Building Selectors
 
 //Reducer
@@ -73,6 +78,7 @@ export const productReducer = createReducer<ProductState>(
       //console.log(action.product);
     return {
       ...state,
+      currentProductId: action.product.id,
       currentProduct: action.product
     }
   }),
@@ -95,8 +101,18 @@ export const productReducer = createReducer<ProductState>(
       }
     };
   }),
-
-
-
-  
+  on(ProductActions.loadProductsSuccess, (state, action):ProductState=>{
+    return {
+      ...state,
+      products: action.products,
+      error: ''
+    }
+  }),
+  on(ProductActions.loadProductsFailure,(state, action):ProductState=>{
+    return{
+      ...state,
+      products: [],
+      error: action.error
+    }
+  })
 );

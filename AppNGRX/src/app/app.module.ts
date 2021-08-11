@@ -14,6 +14,7 @@ import { ShellComponent } from './home/shell.component';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { environment } from '../environments/environment';
       name: 'NG RX Demo',
       maxAge: 25, 
       logOnly: environment.production 
-    })
+    }),
+    EffectsModule.forRoot([])
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,3 +1,4 @@
+import { tap } from 'rxjs/operators';
 import * as ProductAction from './../state/product.actions';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,6 +11,7 @@ import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { Store } from '@ngrx/store';
 import { State } from '../state/product.reducer';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'pm-product-edit',
@@ -20,13 +22,14 @@ export class ProductEditComponent implements OnInit {
   errorMessage = '';
   productForm!: FormGroup;
 
-  product: Product | null=null;
+  //product: Product | null=null;
   //sub!: Subscription;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
   private validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
+  product$!: Observable<Product|null>;
 
   constructor(
     private store: Store<State>,
@@ -69,10 +72,14 @@ export class ProductEditComponent implements OnInit {
     // );
 
     //TODO: Unsubscribe
-    this.store.select(getCurrentProduct).subscribe(currentProduct=>{
-      console.log(currentProduct);
-      this.displayProduct(currentProduct!)
-    });
+    // this.store.select(getCurrentProduct).subscribe(currentProduct=>{
+    //   console.log(currentProduct);
+    //   this.displayProduct(currentProduct!)
+    //});
+
+    this.product$ = this.store.select(getCurrentProduct).pipe(
+      tap(currentProduct=>this.displayProduct(currentProduct))
+    );
 
     // Watch for value changes for validation
     this.productForm.valueChanges.subscribe(
@@ -91,9 +98,9 @@ export class ProductEditComponent implements OnInit {
   }
 
   displayProduct(product: Product | null): void {
-    console.log(product);
+    //console.log(product);
     // Set the local product property
-    this.product = product;
+    //this.product = product;
 
     if (product) {
       // Reset the form back to pristine

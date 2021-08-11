@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 
 import { AuthService } from './auth.service';
 import * as UserAction from './state/user.actions';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './login.component.html',
@@ -13,7 +15,7 @@ import * as UserAction from './state/user.actions';
 })
 export class LoginComponent implements OnInit {
   pageTitle = 'Log In';
-  maskUserName!: boolean;
+  maskUserName$!: Observable<boolean>;
 
   constructor(
     private authService: AuthService, 
@@ -24,9 +26,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     //TODO: Unsubscribe
-    this.store.select(getMaskUserName).subscribe(maskUserName=>{      
-          this.maskUserName = maskUserName;
-    });
+    this.maskUserName$ = this.store.select(getMaskUserName);
   }
 
   cancel(): void {
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   login(loginForm: NgForm): void {
 
-    if(this.maskUserName){
+    if(this.maskUserName$){
       loginForm.form.value.password = loginForm.form.value.username;
     }
 
