@@ -1,6 +1,6 @@
 //define namespace AppState
 import * as AppState from '../../state/app.state'
-import { createAction, createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
+import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import { Product } from '../product';
 import * as ProductActions from './product.actions';
 
@@ -32,21 +32,24 @@ export const getShowProductCode = createSelector(
   state=>state.showProductCode
 );
 
-// export const getCurrentProduct = createSelector(
-//   getProductFeatureState,
-//   state=>state.currentProduct
-// );
+export const getCurrentProduct = createSelector(
+  getProductFeatureState,
+  state=>state.currentProduct
+);
 
 export const getCurrentProductId = createSelector(
   getProductFeatureState,  
   (state)=> state.currentProductId  
 );
 
-export const getCurrentProduct = createSelector(
-  getProductFeatureState,
-  getCurrentProductId,
-  (state, currentProductId)=> state.products.find(p=>p.id === currentProductId)
-);
+// export const getCurrentProduct = createSelector(
+//   getProductFeatureState,
+//   getCurrentProductId,
+//   (state, currentProductId)=> {
+//     //console.log(currentProductId);
+//     state.products.find(p=>p.id === currentProductId);
+//   }
+// );
 
 export const getproducts = createSelector(
   getProductFeatureState,
@@ -66,15 +69,18 @@ export const productReducer = createReducer<ProductState>(
     };
   }),
   on(ProductActions.setCurrentProduct, (state, action): ProductState =>{
+      //console.log("Set Current Action");
+      //console.log(action.product);
     return {
       ...state,
       currentProduct: action.product
     }
   }),
+  
   on(ProductActions.clearCurrentProduct, (state): ProductState =>{
     return {
       ...state,
-      currentProduct: null
+      currentProduct: null      
     }
   }),
   on(ProductActions.initializeCurrentProduct, (state): ProductState => {
@@ -88,5 +94,9 @@ export const productReducer = createReducer<ProductState>(
         starRating: 0
       }
     };
-  })
+  }),
+
+
+
+  
 );

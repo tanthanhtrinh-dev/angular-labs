@@ -1,5 +1,8 @@
+
 //define namespace AppState
 import * as AppState from '../../state/app.state';
+import * as UserAction from './user.actions';
+
 import {
   createAction,
   createFeatureSelector,
@@ -40,7 +43,7 @@ export const getCurrentUser = createSelector(
 
 export const userReducer = createReducer(
   initialState,
-  on(createAction('[User] Mask User Name'), (state): UserState => {
+  on(UserAction.maskUserName, (state): UserState => {
     //console.log('original state:'+ JSON.stringify(state));
     return { ...state, maskUserName: !state.maskUserName };
   })
