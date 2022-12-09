@@ -65,7 +65,7 @@ export class ProductListComponent implements OnInit {
 
     this.productService.getProducts().subscribe({
       next: (products) => {
-        console.log('errro');
+        console.log('error');
         this.products = products;
         this.filteredProducts = this.products;
       },
