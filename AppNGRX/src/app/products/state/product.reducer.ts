@@ -40,8 +40,8 @@ export const getCurrentProduct = createSelector(
 );
 
 export const getCurrentProductId = createSelector(
-  getProductFeatureState,  
-  (state)=> state.currentProductId  
+  getProductFeatureState,
+  (state)=> state.currentProductId
 );
 
 // export const getCurrentProduct = createSelector(
@@ -68,9 +68,9 @@ export const productReducer = createReducer<ProductState>(
   initialState,
   on(ProductActions.toggleProductCode, (state):ProductState => {
     //console.log('original state:'+ JSON.stringify(state));
-    return { 
-      ...state, 
-      showProductCode: !state.showProductCode,      
+    return {
+      ...state,
+      showProductCode: !state.showProductCode,
     };
   }),
   on(ProductActions.setCurrentProduct, (state, action): ProductState =>{
@@ -82,11 +82,10 @@ export const productReducer = createReducer<ProductState>(
       currentProduct: action.product
     }
   }),
-  
   on(ProductActions.clearCurrentProduct, (state): ProductState =>{
     return {
       ...state,
-      currentProduct: null      
+      currentProduct: null
     }
   }),
   on(ProductActions.initializeCurrentProduct, (state): ProductState => {
