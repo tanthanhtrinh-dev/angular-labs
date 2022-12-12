@@ -33,7 +33,7 @@ export class ProductEditComponent implements OnInit {
 
   constructor(
     private store: Store<State>,
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private productService: ProductService) {
 
     // Defines all of the validation messages for the form.
@@ -150,9 +150,9 @@ export class ProductEditComponent implements OnInit {
   saveProduct(originalProduct: Product): void {
     if (this.productForm.valid) {
       if (this.productForm.dirty) {
-        // Copy over all of the original product properties
+        // Copy over all the original product properties
         // Then copy over the values from the form
-        // This ensures values not on the form, such as the Id, are retained
+        // This ensures values not on the form, such as the ID, are retained
         const product = { ...originalProduct, ...this.productForm.value };
 
         if (product.id === 0) {

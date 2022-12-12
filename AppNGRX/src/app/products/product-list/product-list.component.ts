@@ -31,7 +31,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     //   currentProduct => this.selectedProduct = currentProduct!
     // );
 
-
     this.products$ = this.store.select(getProducts)
     this.errorMessage$=this.store.select(getError);
     //I want to get products
@@ -43,15 +42,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
     //   next: (products: Product[]) => this.products = products,
     //   error: err => this.errorMessage = err
     // });
-    
+
     //TODO: Unsubscribe
     // this.store.select('products').subscribe(products=>{
     //   if(products){
     //       this.displayCode = products.showProductCode;
     //   }
     // });
-    // this.store.select(getShowProductCode).subscribe(showProductCode=>{      
-    //       this.displayCode = showProductCode;      
+    // this.store.select(getShowProductCode).subscribe(showProductCode=>{
+    //       this.displayCode = showProductCode;
     // });
 
     this.displayCode$ = this.store.select(getShowProductCode);
