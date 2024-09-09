@@ -1,0 +1,32 @@
+Project name	PO-Project system (NA)
+Entity	PO, OC
+Receiver's name	PO = https://po.tpf.com.au/Procurement/ProcurementItemList
+=> DELIVERY DETAILS {Attention}
+Receiver's contact	PO 
+=>  https://orderconsole.tpf.com.au/console/ConsoleMain?ocid=701369701#generalTab
+    DELIVERY DETAILS {Phone, Email}
+
+Delivery location	PO-Procurement system
+=>  https://orderconsole.tpf.com.au/console/ConsoleMain?ocid=701369701#generalTab
+=> DELIVERY DETAILS {Company Name, Address, Suburd, State, Postcode, Country }
+Requested delivery date:  	PO-Procurement system
+=>  https://orderconsole.tpf.com.au/console/ConsoleMain?ocid=701369701#generalTab
+    DELIVERY DATE
+
+--Rote
+POL	Route CN/IN to VN: 
+Set “Ningbo” as default for China - Vietnam
+Set “Chennai” a
+
+https://projects.tpf.com.au/Project/ProjDetail?id=3140
+https://po.tpf.com.au/Procurement/ListProject
+https://shipping.tpf.com.au/#!/sys/monthly-shipping-schedule
+https://shipping.tpf.com.au/#!/sys/shipping-request
+https://shipping.tpf.com.au/#!/sys/dashboard
+
+
+TeamId,
+EntityId,
+ProjectName,
+ReceiverName,
+ReceiverContact
